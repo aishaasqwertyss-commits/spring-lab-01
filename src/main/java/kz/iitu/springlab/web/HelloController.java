@@ -1,4 +1,5 @@
 package kz.iitu.springlab.web;
+// Lab 01 REST controller
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
