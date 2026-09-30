@@ -1,15 +1,10 @@
 package kz.iitu.springlab.web;
 
-import kz.iitu.springlab.config.AppProperties;
-import kz.iitu.springlab.config.EnvironmentBanner;
+import kz.iitu.springlab.config.*;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/lab3")
@@ -27,16 +22,18 @@ public class Lab3Controller {
 
     @GetMapping("/config")
     public Map<String, Object> config() {
-        return Map.of(
-                "owner", props.owner(),
-                "group", props.group(),
-                "mailFrom", props.mail().from(),
-                "mailRetryCount", props.mail().retryCount(),
-                "mailTimeout", props.mail().timeout().toString(),
-                "mailEnabled", props.mail().enabled(),
-                "serverPort", Objects.requireNonNullElse(environment.getProperty("server.port"), "8080"),
-                "activeProfiles", Arrays.asList(environment.getActiveProfiles()),
-                "banner", banner.describe()
-        );
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("owner",          props.owner());
+        map.put("group",          props.group());
+        map.put("mailFrom",       props.mail().from());
+        map.put("mailRetryCount", props.mail().retryCount());
+        map.put("mailTimeout",    props.mail().timeout().toString());
+        map.put("mailEnabled",    props.mail().enabled());
+        map.put("uiTheme",        props.ui().theme());
+        map.put("uiItemsPerPage", props.ui().itemsPerPage());
+        map.put("serverPort",     environment.getProperty("server.port"));
+        map.put("activeProfiles", Arrays.asList(environment.getActiveProfiles()));
+        map.put("banner",         banner.describe());
+        return map;
     }
 }
