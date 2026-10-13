@@ -32,11 +32,21 @@ public class BookRestController {
 
     // GET /api/books/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Book> find(@PathVariable long id) {
+    public ResponseEntity<?> find(@PathVariable long id) {
 
         return service.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+                .<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> {
+                    org.springframework.http.ProblemDetail problem =
+                            org.springframework.http.ProblemDetail.forStatusAndDetail(
+                                    org.springframework.http.HttpStatus.NOT_FOUND,
+                                    "Book with id " + id + " was not found."
+                            );
+
+                    problem.setTitle("Book Not Found");
+
+                    return ResponseEntity.status(404).body(problem);
+                });
     }
 
     // POST /api/books
